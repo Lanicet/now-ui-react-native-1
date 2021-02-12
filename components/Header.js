@@ -113,7 +113,7 @@ class Header extends React.Component {
         right
         color="black"
         style={styles.search}
-        placeholder="What are you looking for?"
+        placeholder="Que recherchez-vous?"
         placeholderTextColor={'#8898AA'}
         onFocus={() => {Keyboard.dismiss(); navigation.navigate('Pro')}}
         iconContent={

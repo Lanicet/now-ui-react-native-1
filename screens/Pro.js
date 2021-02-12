@@ -51,16 +51,16 @@ class Pro extends React.Component {
             <Block center style={styles.title}>
               <Block>
                 <Text color="white" size={60} style={styles.font}>
-                  Now UI
+                  Vend tout
                 </Text>
               </Block>
               <Block row>
                 <Text middle color="white" size={34} style={styles.font}>
-                  React Native
+                  Kmer app
                 </Text>
                 <Block middle style={styles.pro}>
                   <Text size={14} color="white" style={styles.font}>
-                  PRO
+                  cm
                 </Text>
                 </Block>
               </Block>
@@ -82,7 +82,7 @@ class Pro extends React.Component {
                 onPress={() => navigation.navigate("Home")}
 
               >
-                BUY NOW
+                Accueil
               </Button>
             </Block>
           </Block>

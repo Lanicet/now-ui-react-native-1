@@ -5,52 +5,37 @@ import {
   Dimensions,
   StatusBar,
   TouchableWithoutFeedback,
-  Keyboard,SafeAreaView, ScrollView,
+  Keyboard
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
-import useApi from "../hooks/useApi";
-import usersApi from "../api/users";
 import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
+
+
 const { width, height } = Dimensions.get('screen');
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
+function Login (props) {
+  const [credentials, setCredentials] = useState({ email:"", password:""});
 
-function Register(params) {
+    const auth = useAuth();
+    const [loginFailed, setLoginFailed] = useState(false);
 
-  const registerApi = useApi(usersApi.register);
-  const loginApi = useApi(authApi.login);
-  const auth = useAuth();
-  const [error, setError] = useState();
-    const [credentials, setCredentials] = useState({
-    name: "",
-    email: "",
-    password: "",
-    passwordConfirm: ""
-  });
-    const handleSubmit = async (userInfo) => {
-    const result = await registerApi.request(userInfo);
+    const handleSubmit = async ({ email, password }) => {
 
-    if (!result.ok) {
-      if (result.data) setError(result.data.error);
-      else {
-        setError("An unexpected error occurred.");
-        console.log(result);
-      }
-      return;
-    }
+        const result = await authApi.login(email, password);
+        console.log(result.data.token);
+        if (!result.ok) return setLoginFailed(true);
+        setLoginFailed(false);
+        auth.logIn(result.data.token);
+        props.navigation.goBack()
+    };
 
-    const { data: authToken } = await loginApi.request(
-      userInfo.email,
-      userInfo.password
-    );
-    auth.logIn(authToken);
-  };
     return (
       <DismissKeyboard>
         <Block flex middle>
@@ -59,11 +44,8 @@ function Register(params) {
             style={styles.imageBackgroundContainer}
             imageStyle={styles.imageBackground}
           >
-
             <Block flex middle>
               <Block style={styles.registerContainer}>
-              <SafeAreaView >
-              <ScrollView>
                 <Block flex space="evenly">
                   <Block flex={0.4} middle style={styles.socialConnect}>
                     <Block flex={0.5} middle>
@@ -75,59 +57,12 @@ function Register(params) {
                         color="#333"
                         size={24}
                       >
-                       
+                        Login
                       </Text>
                     </Block>
 
-                    <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="twitter"
-                        iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.TWITTER}
-                        style={[styles.social, styles.shadow]}
-                      />
+                  </Block>
 
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="dribbble"
-                        iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.DRIBBBLE}
-                        style={[styles.social, styles.shadow]}
-                      />
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="facebook"
-                        iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.FACEBOOK}
-                        style={[styles.social, styles.shadow]}
-                      />
-                    </Block>
-                  </Block>
-                  <Block flex={0.1} middle>
-                    <Text
-                      style={{
-                        fontFamily: 'montserrat-regular',
-                        textAlign: 'center'
-                      }}
-                      muted
-                      size={16}
-                    >
-                      or be classical
-                    </Text>
-                  </Block>
                   <Block flex={1} middle space="between">
                     <Block center flex={0.9}>
                       <Block flex space="between">
@@ -137,6 +72,7 @@ function Register(params) {
                             <Input
                               placeholder="Email"
                               style={styles.inputs}
+                              value={credentials.email}
                               onChangeText={(email) => setCredentials({...credentials,email:email})}
                               iconContent={
                                 <Icon
@@ -148,71 +84,36 @@ function Register(params) {
                                 />
                               }
                             />
-                          </Block>
-                          <Block width={width * 0.8}>
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
                             <Input
                               placeholder="Mot de passe"
                               style={styles.inputs}
                               password 
                               viewPass
+                              value={credentials.password}
                               onChangeText={(password) => setCredentials({...credentials,password:password})}
                               iconContent={
                                 <Icon
                                   size={16}
                                   color="#ADB5BD"
-                                  name="caps-small2x"
+                                  name="email-852x"
                                   family="NowExtra"
                                   style={styles.inputIcons}
                                 />
                               }
                             />
                           </Block>
-                          <Block width={width * 0.8}>
-                            <Input
-                              placeholder="Confirmez votre mot de passe"
-                              style={styles.inputs}
-                              password 
-                              viewPass
-                              onChangeText={(password) => setCredentials({...credentials,password:password})}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="caps-small2x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>                          
-                          <Block
-                            style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15}}
-                            row
-                            width={width * 0.75}
-                          >
-                            <Checkbox
-                              checkboxStyle={{
-                                borderWidth: 1,
-                                borderRadius: 2,
-                                borderColor: '#E3E3E3'
-                              }}
-                              color={nowTheme.COLORS.PRIMARY}
-                              labelStyle={{
-                                color: nowTheme.COLORS.HEADER,
-                                fontFamily: 'montserrat-regular'
-                              }}
-                              label="J´accepte les conditions d´utilisation."
-                            />
                           </Block>
+
                         </Block>
                         <Block center>
-                          <Button color="primary" round style={styles.createButton} onPress={() =>handleSubmit(credentials)}>
+                          <Button color="primary" round style={styles.createButton} onPress={() =>handleSubmit({email:credentials.email, password:credentials.password})}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Continuer
+                              Se Connecter
                             </Text>
                           </Button>
                         </Block>
@@ -220,8 +121,6 @@ function Register(params) {
                     </Block>
                   </Block>
                 </Block>
-            </ScrollView>
-          </SafeAreaView>
               </Block>
             </Block>
           </ImageBackground>
@@ -229,6 +128,7 @@ function Register(params) {
       </DismissKeyboard>
     );
   }
+
 const styles = StyleSheet.create({
   imageBackgroundContainer: {
     width: width,
@@ -243,7 +143,7 @@ const styles = StyleSheet.create({
   registerContainer: {
     marginTop: 55,
     width: width * 0.9,
-    height: height < 812 ? height * 0.8 : height * 0.8,
+    height: height < 812 ? height * 0.7 : height * 0.7,
     backgroundColor: nowTheme.COLORS.WHITE,
     borderRadius: 4,
     shadowColor: nowTheme.COLORS.BLACK,
@@ -295,8 +195,8 @@ const styles = StyleSheet.create({
   },
   createButton: {
     width: width * 0.5,
-    marginTop: 25,
-    marginBottom: 40
+    marginTop: 45,
+    marginBottom: 140
   },
   social: {
     width: theme.SIZES.BASE * 3.5,
@@ -307,4 +207,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Register;
+export default Login;

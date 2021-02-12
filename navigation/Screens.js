@@ -9,6 +9,7 @@ import Home from '../screens/Home';
 import Pro from '../screens/Pro';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register';
+import Login from '../screens/Login';
 import Components from '../screens/Components';
 import Articles from '../screens/Articles';
 import Onboarding from '../screens/Onboarding';
@@ -50,13 +51,35 @@ function AccountStack(props) {
   return (
     <Stack.Navigator initialRouteName="Account" mode="card" headerMode="screen">
       <Stack.Screen
-        name="Account"
+        name="Register"
         component={Register}
         options={{
           header: ({ navigation, scene }) => (
             <Header 
               transparent
-              title="Create Account"
+              title="Créer un compte"
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function LoginStack(props) {
+  return (
+    <Stack.Navigator initialRouteName="Login" mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header 
+              transparent
+              title="Identifiez-vous pour continuer"
               navigation={navigation}
               scene={scene}
             />
@@ -118,7 +141,7 @@ function HomeStack(props) {
         options={{
           header: ({ navigation, scene }) => (
             <Header
-              title="Home"
+              title="Accueil"
               search
               options
               navigation={navigation}
@@ -150,6 +173,7 @@ function HomeStack(props) {
 }
 
 function AppStack(props) {
+
   return (
     <Drawer.Navigator
       style={{ flex: 1 }}
@@ -185,6 +209,7 @@ function AppStack(props) {
       <Drawer.Screen name="Articles" component={ArticlesStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Account" component={AccountStack} />
+      <Drawer.Screen name="Login" component={LoginStack} />
     </Drawer.Navigator>
   );
 }

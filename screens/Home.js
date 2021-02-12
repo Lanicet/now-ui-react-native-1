@@ -1,12 +1,22 @@
-import React from "react";
+import React, {useEffect}from "react";
 import { StyleSheet, Dimensions, ScrollView } from "react-native";
 import { Block, theme, Text } from "galio-framework";
 
 import { Card, Button } from "../components";
 import articles from "../constants/articles";
+import useApi from "../hooks/useApi";
+import articlesApi from "../api/articles";
+
 const { width } = Dimensions.get("screen");
 
-class Home extends React.Component {
+function Home({navigation}) {
+  
+  const getArticlesApi = useApi(articlesApi.getArticles);
+
+  useEffect(() => {
+    getArticlesApi.request();
+  }, []);
+console.log(getArticlesApi)
   renderArticles = () => {
     return (
       <ScrollView
@@ -22,6 +32,21 @@ class Home extends React.Component {
             />
             <Card item={articles[2]} />
           </Block>
+                    <Block flex row>
+            <Card
+              item={articles[1]}
+              style={{ marginRight: theme.SIZES.BASE }}
+            />
+            <Card item={articles[2]} />
+          </Block>
+                    <Block flex row>
+            <Card
+              item={articles[1]}
+              style={{ marginRight: theme.SIZES.BASE }}
+            />
+            <Card item={articles[2]} />
+          </Block>
+          <Card item={articles[2]} />
           <Card item={articles[3]} horizontal />
           <Card item={articles[4]} full />
         </Block>
@@ -29,13 +54,13 @@ class Home extends React.Component {
     );
   };
 
-  render() {
+
     return (
       <Block flex center style={styles.home}>
-        {this.renderArticles()}
+        {renderArticles()}
       </Block>
     );
-  }
+
 }
 
 const styles = StyleSheet.create({

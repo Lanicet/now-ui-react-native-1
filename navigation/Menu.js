@@ -5,7 +5,8 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  Linking
+  Linking,
+  Button
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { useSafeArea } from "react-native-safe-area-context";
@@ -13,7 +14,7 @@ import Images from "../constants/Images";
 import { DrawerItem as DrawerCustomItem, Icon } from "../components";
 
 import nowTheme from "../constants/Theme";
-
+import useAuth from "../auth/useAuth";
 const { width } = Dimensions.get("screen");
 
 function CustomDrawerContent({
@@ -24,13 +25,13 @@ function CustomDrawerContent({
   state,
   ...rest
 }) {
+  const { user, logOut } = useAuth();
   const insets = useSafeArea();
   const screens = [
     "Home",
     "Components",
     "Articles",
-    "Profile",
-    "Account",
+    "Profile"
   ];
   return (
     <Block
@@ -51,14 +52,14 @@ function CustomDrawerContent({
       <Block flex style={{ paddingLeft: 8, paddingRight: 14 }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {screens.map((item, index) => {
-            return (
-              <DrawerCustomItem
-                title={item}
-                key={index}
-                navigation={navigation}
-                focused={state.index === index ? true : false}
-              />
-            );
+              return (
+                <DrawerCustomItem
+                  title={item}
+                  key={index}
+                  navigation={navigation}
+                  focused={state.index === index ? true : false}
+                />
+              );
           })}
           <Block flex style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}>
           <Block
@@ -72,7 +73,9 @@ function CustomDrawerContent({
           </Text>
         </Block>
         <DrawerCustomItem title="GETTING STARTED" navigation={navigation}/>
-        <DrawerCustomItem title="LOGOUT" navigation={navigation}/>
+        {user&&<Button title="LOGOUT" onPress={() => logOut()}/>}
+        {!user&&<DrawerCustomItem title="Login" navigation={navigation} focused={state.index === 7 ? true : false}/>}
+        {!user&&<DrawerCustomItem title="Account" navigation={navigation}/>}
         </ScrollView>
       </Block>
     </Block>

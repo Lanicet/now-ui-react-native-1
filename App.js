@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Image } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
 import { NavigationContainer } from '@react-navigation/native';
-
+import AuthContext from "./auth/context";
 import Screens from './navigation/Screens';
 import { Images, articles, nowTheme } from './constants';
 
@@ -28,41 +28,71 @@ const assetImages = [
 articles.map(article => assetImages.push(article.image));
 
 function cacheImages(images) {
+  
   return images.map(image => {
+
     if (typeof image === 'string') {
+
       return Image.prefetch(image);
+
     } else {
+
       return Asset.fromModule(image).downloadAsync();
+
     }
+
   });
+
 }
 
-export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-    fontLoaded: false
+export default function App() {
+
+  const [user, setUser] = useState();
+  const [isReady, setIsReady] = useState(false);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [fontLoaded, SetFontLoaded] = useState(false);
+
+  const restoreUser = async () => {
+  const user = await authStorage.getUser();
+  if (user) setUser(user);
   };
 
-  // async componentDidMount() {
-  //   Font.loadAsync({
-  //     'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
-  //     'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
-  //   });
 
-  //   this.setState({ fontLoaded: true });
-  // }
+  const _loadResourcesAsync = async () => {
+    await Font.loadAsync({
+      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
+      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+    });
+    restoreUser();
 
-  render() {
-    if (!this.state.isLoadingComplete) {
+    SetFontLoaded(true);
+    return Promise.all([...cacheImages(assetImages)]);
+  };
+
+ const _handleLoadingError = error => {
+    // In this case, you might want to report the error to your error
+    // reporting service, for example Sentry
+    console.warn(error);
+  };
+
+ const _handleFinishLoading = () => {
+    if (fontLoaded) {
+      setIsLoadingComplete(true);
+    }
+    setIsReady(true)
+  };
+
+    if (!isLoadingComplete) {
       return (
         <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
+          startAsync={_loadResourcesAsync}
+          onError={_handleLoadingError}
+          onFinish={_handleFinishLoading}
         />
       );
     } else {
       return (
+        <AuthContext.Provider value={{ user, setUser }}>
         <NavigationContainer>
           <GalioProvider theme={nowTheme}>
             <Block flex>
@@ -70,29 +100,8 @@ export default class App extends React.Component {
             </Block>
           </GalioProvider>
         </NavigationContainer>
+        </AuthContext.Provider>
       );
     }
-  }
 
-  _loadResourcesAsync = async () => {
-    await Font.loadAsync({
-      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
-      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
-    });
-
-    this.setState({ fontLoaded: true });
-    return Promise.all([...cacheImages(assetImages)]);
-  };
-
-  _handleLoadingError = error => {
-    // In this case, you might want to report the error to your error
-    // reporting service, for example Sentry
-    console.warn(error);
-  };
-
-  _handleFinishLoading = () => {
-    if (this.state.fontLoaded) {
-      this.setState({ isLoadingComplete: true });
-    }
-  };
 }

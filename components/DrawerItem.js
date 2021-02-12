@@ -60,6 +60,16 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
+        case "Login":
+        return (
+          <Icon
+            name="badge2x"
+            family="NowExtra"
+            size={18}
+            color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+            style={{ opacity: 0.5 }}
+          />
+        );
       case "Settings":
         return (
           <Icon

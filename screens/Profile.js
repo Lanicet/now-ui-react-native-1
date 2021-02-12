@@ -39,7 +39,7 @@ const Profile = () => {
                     }}
                     color='#ffffff'
                     >
-                    Ryan Scheinder
+                    Prolifik
                   </Text>
 
                   <Text
