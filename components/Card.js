@@ -3,7 +3,6 @@ import { withNavigation } from '@react-navigation/compat';
 import PropTypes from 'prop-types';
 import { StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
-
 import { nowTheme } from '../constants';
 
 class Card extends React.Component {
@@ -31,12 +30,12 @@ class Card extends React.Component {
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Pro')}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', item)}>
           <Block flex style={imgContainer}>
-            <Image resizeMode="cover" source={item.image} style={imageStyles} />
+            <Image resizeMode="cover" source={{uri:"http://192.168.178.134:8000/media/"+item.images[0].filePath}} style={imageStyles} />
           </Block>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Pro')}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', item)}>
           <Block flex space="between" style={styles.cardDescription}>
             <Block flex>
               <Text
@@ -47,40 +46,14 @@ class Card extends React.Component {
               >
                 {item.title}
               </Text>
-              {item.subtitle ? (
-                <Block flex center>
-                  <Text
-                    style={{ fontFamily: 'montserrat-regular' }}
-                    size={32}
-                    color={nowTheme.COLORS.BLACK}
-                  >
-                    {item.subtitle}
-                  </Text>
-                </Block>
-              ) : (
-                  <Block />
-                )}
               {item.description ? (
-                <Block flex center>
-                  <Text
-                    style={{ fontFamily: 'montserrat-regular', textAlign: 'center', padding: 15 }}
-                    size={14}
-                    color={"#9A9A9A"}
-                  >
-                    {item.description}
-                  </Text>
-                </Block>
-              ) : (
-                  <Block />
-                )}
-              {item.body ? (
                 <Block flex left>
                   <Text
                     style={{ fontFamily: 'montserrat-regular' }}
                     size={12}
                     color={nowTheme.COLORS.TEXT}
                   >
-                    {item.body}
+                    {item.description.substr(0,30)+"..."}
                   </Text>
                 </Block>
               ) : (
@@ -95,7 +68,7 @@ class Card extends React.Component {
                 color={ctaColor || nowTheme.COLORS.ACTIVE}
                 bold
               >
-                {item.cta}
+                {item.price+" Fcfa"}
               </Text>
             </Block>
           </Block>

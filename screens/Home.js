@@ -23,32 +23,14 @@ console.log(getArticlesApi)
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.articles}
       >
+      {getArticlesApi.error && (
+        <>
+          <AppText>Couldn't retrieve the Articles.</AppText>
+          <Button title="Retry" onPress={getArticlesApi.request} />
+        </>
+      )}
         <Block flex>
-        <Card item={articles[0]} horizontal />
-          <Block flex row>
-            <Card
-              item={articles[1]}
-              style={{ marginRight: theme.SIZES.BASE }}
-            />
-            <Card item={articles[2]} />
-          </Block>
-                    <Block flex row>
-            <Card
-              item={articles[1]}
-              style={{ marginRight: theme.SIZES.BASE }}
-            />
-            <Card item={articles[2]} />
-          </Block>
-                    <Block flex row>
-            <Card
-              item={articles[1]}
-              style={{ marginRight: theme.SIZES.BASE }}
-            />
-            <Card item={articles[2]} />
-          </Block>
-          <Card item={articles[2]} />
-          <Card item={articles[3]} horizontal />
-          <Card item={articles[4]} full />
+          {getArticlesApi.data.map(article=><Card item={article} horizontal />)}
         </Block>
       </ScrollView>
     );

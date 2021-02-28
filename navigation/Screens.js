@@ -7,8 +7,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // screens
 import Home from '../screens/Home';
 import Pro from '../screens/Pro';
+import Details from '../screens/Details';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register';
+import NewArticle from '../screens/NewArticle';
 import Login from '../screens/Login';
 import Components from '../screens/Components';
 import Articles from '../screens/Articles';
@@ -68,7 +70,27 @@ function AccountStack(props) {
     </Stack.Navigator>
   );
 }
-
+function NewArticleStack(props) {
+  return (
+    <Stack.Navigator initialRouteName="NewArticle" mode="card" headerMode="screen">
+      <Stack.Screen
+        name="NewArticle"
+        component={NewArticle}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header 
+              transparent
+              title="Créer une annonce"
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 function LoginStack(props) {
   return (
     <Stack.Navigator initialRouteName="Login" mode="card" headerMode="screen">
@@ -128,6 +150,23 @@ function ProfileStack(props) {
           headerTransparent: true
         }}
       />
+      <Stack.Screen
+        name="Details"
+        component={Details}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=""
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -158,6 +197,23 @@ function HomeStack(props) {
           header: ({ navigation, scene }) => (
             <Header
               title=""
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+      <Stack.Screen
+        name="Details"
+        component={Details}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title="Retour"
               back
               white
               transparent
@@ -210,6 +266,7 @@ function AppStack(props) {
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Account" component={AccountStack} />
       <Drawer.Screen name="Login" component={LoginStack} />
+      <Drawer.Screen name="NewArticle" component={NewArticleStack} />
     </Drawer.Navigator>
   );
 }
